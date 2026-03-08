@@ -47,7 +47,6 @@ function plugin_init_transferticketentity()
 
     Plugin::registerClass('PluginTransferticketentityProfile', ['addtabon' => ['Profile']]);
 
-    $PLUGIN_HOOKS['add_javascript']['transferticketentity'][] = "js/script.js";
     $PLUGIN_HOOKS['add_css']['transferticketentity'][] = "css/style.css";
 
     $PLUGIN_HOOKS['csrf_compliant']['transferticketentity'] = true;

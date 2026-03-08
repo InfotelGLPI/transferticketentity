@@ -61,7 +61,6 @@ class PluginTransferticketentityTicket extends CommonDBTM
             }
         }
 
-
         return $array;
     }
 
@@ -75,7 +74,7 @@ class PluginTransferticketentityTicket extends CommonDBTM
         $array = [];
 
         $group = new Group();
-        $groups = $group->find(['is_assign' => 1, 'entities_id' => $entities]);
+        $groups = $group->find(['is_assign' => 1, 'entities_id' => $entities], 'name');
 
         foreach ($groups as $data) {
             $array[$data['id']] = $data['name'];
@@ -86,38 +85,19 @@ class PluginTransferticketentityTicket extends CommonDBTM
 
 
     /**
-     * Return parent's entity name
-     *
-     * @return string
-     */
-    public function searchParentEntityName($id)
-    {
-        global $DB;
-
-        $result = $DB->request([
-            'FROM' => 'glpi_entities',
-        ]);
-
-        foreach ($result as $subArray) {
-            if ($subArray['id'] == $id) {
-                return $subArray['completename'];
-            }
-        }
-    }
-
-    /**
      * Display the ticket transfer form
      *
      * @return void
      */
     public function showFormMcv($ticket)
     {
-
         $params['id_ticket'] = $ticket->getID();
         $params['id_user'] = $_SESSION['glpiID'];
+
+        $entity = new Entity();
+        $entity->getFromDB($ticket->fields['entities_id']);
         $checkAssign = self::checkAssign($params);
         if (!Session::haveright("plugin_transferticketentity_bypass", READ) && !$checkAssign) {
-
             echo "<div class='alert alert-danger'>";
             echo "<p>" .
                 __("You must be assigned to the ticket to be able to transfer it", "transferticketentity")
@@ -128,15 +108,6 @@ class PluginTransferticketentityTicket extends CommonDBTM
         }
 
         $getEntitiesRights = self::getEntitiesRights($ticket->fields['entities_id']);
-
-        $getGroupEntities = [];
-
-        foreach ($getEntitiesRights as $entity) {
-            if ($entity['allow_transfer'] == 1) {
-                $groups = self::getGroupEntities($entity['entities_id']);
-                $getGroupEntities[] = $groups;
-            }
-        }
 
         if (!Session::haveRight('ticket', UPDATE)) {
             echo "<div class='alert alert-danger'>";
@@ -178,17 +149,23 @@ class PluginTransferticketentityTicket extends CommonDBTM
 
         echo "<div class='card-header'>";
         echo "<h3 class='card-title'>";
-        echo __('Transfer the ticket', 'transferticketentity');
+        echo __('Transfer the ticket', 'transferticketentity')." - ".$entity->getName();
         echo "</h3>";
         echo "</div>";
 
         echo "<div class='card-body'>";
         echo "<div class='card-text'>";
 
+        echo "<p class='alert alert-warning'>" . __(
+            "Once the transfer has been completed, the ticket will remain visible only if you have the required rights.",
+            "transferticketentity"
+        ) . "</p>";
+
         echo "<div class='form-field row align-items-center col-12 col-sm-12 mb-2 tt_entity_choice'>";
         echo "<label class='col-form-label col-xxl-5 text-xxl-end' for='entity_choice'>" . __(
-                "Select ticket entity to transfer",
-                "transferticketentity");
+            "Select ticket entity to transfer",
+            "transferticketentity"
+        );
         echo "</label>";
 
         echo "<div class='col-xxl-7 field-container'>";
@@ -212,27 +189,72 @@ class PluginTransferticketentityTicket extends CommonDBTM
             ]
         );
 
+        Ajax::updateItemOnSelectEvent(
+            "dropdown_entity_choice$rand",
+            "showmandatoryjustification",
+            PLUGIN_TRANSFERTICKETENTITY_FULLWEBDIR . "/ajax/showentitymandatoryjustification.php",
+            [
+                'entity_selection' => '__VALUE__',
+            ]
+        );
+
+        Ajax::updateItemOnSelectEvent(
+            "dropdown_entity_choice$rand",
+            "showmandatorygroup",
+            PLUGIN_TRANSFERTICKETENTITY_FULLWEBDIR . "/ajax/showentitymandatorygroup.php",
+            [
+                'entity_selection' => '__VALUE__',
+            ]
+        );
+
         echo "</div>";
         echo "</div>";
 
         echo "<div class='form-field row align-items-center col-12 col-sm-12 mb-2'>";
         echo "<label class='col-form-label col-xxl-5 text-xxl-end' for='group_choice'>";
         echo __("Select the group to assign", "transferticketentity");
+        echo "<span id='showmandatorygroup'>";
+        echo "</span>";
         echo "</label>";
 
         echo "<div class='col-xxl-7 field-container'>";
         echo "<span id='show_entitygroup'>";
 
         echo "</span>";
+        echo "</div>";
+        echo "</div>";
+
+
+        echo "<div class='form-field row align-items-start col-12 col-sm-12 mb-2'>";
+        echo "<label class='col-form-label col-xxl-5 text-xxl-end' for='justification' style='vertical-align: middle;'>";
+        echo __("Justification", "transferticketentity");
+        echo "<span id='showmandatoryjustification'>";
+        echo "</span>";
+        echo "</label>";
+
+        echo "<div class='col-xxl-7 field-container'>";
+
+        Html::textarea([
+            'name' => "justification",
+            'cols' => '45',
+            'rows' => '5',
+            'enable_richtext' => false,
+            'enable_fileupload' => false
+        ]);
+
+        echo "<br><p class='alert alert-warning'>" . __(
+            "Warning, category will be reset if it does not exist in the target entity.",
+            "transferticketentity"
+        ) . "</p>";
 
         echo Html::hidden("id_ticket", ["value" => "$id_ticket"]);
         echo Html::hidden("id_user", ["value" => "$id_user"]);
 
-        echo "</div>";
+        echo "</div><br>";
         echo "<div class='text-end'>";
         echo Html::submit(
             __('Confirm', 'transferticketentity'),
-            ['id' => 'tt_btn_open_modal_form', 'class' => 'btn btn-primary',]
+            ['name' => 'transfertticket', 'class' => 'btn btn-primary']
         );
         echo "</div>";
         echo "</div>";
@@ -240,35 +262,6 @@ class PluginTransferticketentityTicket extends CommonDBTM
         echo "</div>";
         echo "</div>";
         echo "</div>";
-
-        echo "<dialog id='tt_modal_form_adder' class='tt_modal'>";
-        echo "<h2>" . __("Confirm transfer ?", "transferticketentity") . "</h2>";
-        echo "<p>" . __(
-                "Once the transfer has been completed, the ticket will remain visible only if you have the required rights.",
-                "transferticketentity"
-            ) . "</p>";
-        echo "<div class='justification'>";
-        echo "<label for='justification'>" . __("Please explain your transfer", "transferticketentity") . " </label>";
-        echo "<textarea id='justification' name='justification' ></textarea>";
-        echo "</div>";
-        echo "<p class='adv-msg'>" . __(
-                "Warning, category will be reset if it does not exist in the target entity.",
-                "transferticketentity"
-            ) . "</p>";
-
-        echo "<div>";
-
-        echo Html::submit(
-            __('Cancel'),
-            ['name' => 'canceltransfert', 'class' => 'btn btn-danger', 'id' => 'canceltransfert']
-        );
-        echo Html::submit(
-            __('Confirm', 'transferticketentity'),
-            ['name' => 'transfertticket', 'class' => 'btn btn-success', 'id' => 'transfertticket']
-
-        );
-        echo "</div>";
-        echo "</dialog>";
 
         Html::closeForm();
     }
@@ -279,7 +272,7 @@ class PluginTransferticketentityTicket extends CommonDBTM
      *
      * @return bool
      */
-    public function checkAssign($params)
+    public static function checkAssign($params)
     {
         $ticket = new Ticket();
         $ticket->getfromDB($params['id_ticket']);
@@ -324,7 +317,7 @@ class PluginTransferticketentityTicket extends CommonDBTM
      *
      * @return array $checkEntityETT
      */
-    public function checkEntityETT()
+    public static function checkEntityETT()
     {
         $array = [];
 
@@ -342,7 +335,7 @@ class PluginTransferticketentityTicket extends CommonDBTM
      *
      * @return array $checkGroup
      */
-    public function checkGroup($params)
+    public static function checkGroup($params)
     {
         $entity_choice = $params['entity_choice'];
 
@@ -360,34 +353,11 @@ class PluginTransferticketentityTicket extends CommonDBTM
 
 
     /**
-     * Get selected entity rights
-     *
-     * @return array
-     */
-    public function checkEntityRight($params)
-    {
-        $array = [];
-        $entity_config = new PluginTransferticketentityEntity();
-        $entities = $entity_config->find(['entities_id' => $params['entity_choice']]);
-
-        foreach ($entities as $data) {
-            $array['allow_entity_only_transfer'] = $data['allow_entity_only_transfer'];
-            $array['justification_transfer'] = $data['justification_transfer'];
-            $array['allow_transfer'] = $data['allow_transfer'];
-            $array['keep_category'] = $data['keep_category'];
-            $array['itilcategories_id'] = $data['itilcategories_id'];
-        }
-
-        return $array;
-    }
-
-
-    /**
      * Check if category exist in target entity
      *
      * @return bool
      */
-    public function checkExistingCategory($params)
+    public static function checkExistingCategory($params)
     {
         global $DB;
 
@@ -493,11 +463,12 @@ class PluginTransferticketentityTicket extends CommonDBTM
      *
      * @return boolean
      */
-    public function checkMandatoryCategory($params)
+    public static function checkMandatoryCategory($params)
     {
         $entity = new Entity();
         $entity->getFromDB($params['entity_choice']);
-        $tickettemplates_id = $entity->fields['tickettemplates_id'];
+
+        $tickettemplates_id = Entity::getUsedConfig('tickettemplates_strategy', $params['entity_choice'], 'tickettemplates_id', 0);
 
         $ttm = new TicketTemplateMandatoryField();
         $mandatoryFields = $ttm->getMandatoryFields($tickettemplates_id);
@@ -525,7 +496,7 @@ class PluginTransferticketentityTicket extends CommonDBTM
         $checkEntity = self::checkEntityETT();
         $checkGroup = self::checkGroup($params);
 
-        $checkEntityRight = self::checkEntityRight($params);
+        $checkEntityRight = PluginTransferticketentityEntity::checkEntityRight($params);
 
         $checkExistingCategory = self::checkExistingCategory($params);
 
@@ -540,9 +511,9 @@ class PluginTransferticketentityTicket extends CommonDBTM
 
         $group = new Group();
         $group->getfromDB($params['group_choice']);
-        $theGroup = $group->getName();
 
-        if (!isset($params['justification']) || $params['justification'] == '') {
+        if (!isset($params['justification'])
+            || $params['justification'] == '') {
             if ($checkEntityRight['justification_transfer'] == 1) {
                 Session::addMessageAfterRedirect(
                     __(
@@ -559,7 +530,8 @@ class PluginTransferticketentityTicket extends CommonDBTM
             }
         }
 
-        if (empty($params['group_choice']) && $checkEntityRight['allow_entity_only_transfer'] == 1) {
+        if (empty($params['group_choice'])
+            && $checkEntityRight['allow_entity_only_transfer'] == 1) {
             Session::addMessageAfterRedirect(
                 __(
                     "Please select a valid group",
@@ -570,11 +542,13 @@ class PluginTransferticketentityTicket extends CommonDBTM
             );
 
             Html::back();
-        } elseif (empty($params['group_choice']) && $checkEntityRight['allow_entity_only_transfer'] == 0) {
+        } elseif (empty($params['group_choice'])
+            && $checkEntityRight['allow_entity_only_transfer'] == 0) {
             $requiredGroup = false;
         }
 
-        if (!Session::haveright("plugin_transferticketentity_bypass", READ) && !$checkAssign) {
+        if (!Session::haveright("plugin_transferticketentity_bypass", READ)
+            && !$checkAssign) {
             Session::addMessageAfterRedirect(
                 __(
                     "You must be assigned to the ticket to be able to transfer it",
@@ -597,7 +571,8 @@ class PluginTransferticketentityTicket extends CommonDBTM
             );
 
             Html::back();
-        } elseif (!empty($params['group_choice']) && !in_array($params['group_choice'], $checkGroup)) {
+        } elseif (!empty($params['group_choice'])
+            && !in_array($params['group_choice'], $checkGroup)) {
             Session::addMessageAfterRedirect(
                 __(
                     "Please select a valid group",
@@ -617,7 +592,7 @@ class PluginTransferticketentityTicket extends CommonDBTM
                 'entities_id' => $params['entity_choice'],
             ];
 
-            if ($theGroup) {
+            if ($params['group_choice'] && $params['group_choice'] > 0) {
                 $ticket_status = ['status' => CommonITILObject::ASSIGNED];
                 $ticket_update = array_merge($ticket_update, $ticket_status);
             } else {
@@ -702,8 +677,8 @@ class PluginTransferticketentityTicket extends CommonDBTM
 
             $groupText = "<br> <br> $justification";
 
-            if ($theGroup) {
-                $groupText = __("in the group", "transferticketentity") . " $theGroup \n <br> <br> $justification";
+            if ($params['group_choice'] && $params['group_choice'] > 0) {
+                $groupText = __("in the group", "transferticketentity") ." ". $group->getName() ."\n <br> <br> $justification";
             }
 
             // Log the transfer in a task
@@ -713,9 +688,9 @@ class PluginTransferticketentityTicket extends CommonDBTM
                 'is_private' => true,
                 'state' => Planning::INFO,
                 'content' => __(
-                        "Escalation to",
-                        "transferticketentity"
-                    ) . " $theEntity " . $groupText
+                    "Escalation to",
+                    "transferticketentity"
+                ) . " $theEntity " . $groupText
             ]);
 
             $ticket = new ticket();
@@ -729,7 +704,7 @@ class PluginTransferticketentityTicket extends CommonDBTM
                 INFO
             );
 
-            Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+            Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=".$ticket->getID());
         }
     }
 }

@@ -153,6 +153,9 @@ class PluginTransferticketentityEntity extends CommonDBTM
 
         $availableCategories = self::availableCategories();
 
+        $params['entity_choice'] = $item->getID();
+        $checkMandatoryCategory = PluginTransferticketentityTicket::checkMandatoryCategory($params);
+
         if (empty($checkRights->fields)) {
             $checkRights->fields['allow_entity_only_transfer'] = 0;
             $checkRights->fields['justification_transfer'] = 0;
@@ -235,6 +238,14 @@ class PluginTransferticketentityEntity extends CommonDBTM
             ['value' => $checkRights->fields['itilcategories_id'],
                 'class' => 'itilcategories_id']
         );
+
+        if($checkMandatoryCategory) {
+            echo "<br><br><div class='alert alert-warning'>";
+            echo "<p>" .
+                __("The category is mandatory in the ticket template assigned to the entity", "transferticketentity")
+                . "</p>";
+            echo "</div>";
+        }
         echo "</td>";
         echo "</tr>";
         echo "</tbody>";
@@ -250,6 +261,7 @@ class PluginTransferticketentityEntity extends CommonDBTM
             echo "</div>\n";
             Html::closeForm();
         }
+
     }
 
     public static function getEntitiesRights()
@@ -272,6 +284,29 @@ class PluginTransferticketentityEntity extends CommonDBTM
 
         foreach ($result as $data) {
             array_push($array, $data);
+        }
+
+        return $array;
+    }
+
+
+    /**
+     * Get selected entity rights
+     *
+     * @return array
+     */
+    public static function checkEntityRight($params)
+    {
+        $array = [];
+        $entity_config = new self();
+        $entities = $entity_config->find(['entities_id' => $params['entity_choice']]);
+
+        foreach ($entities as $data) {
+            $array['allow_entity_only_transfer'] = $data['allow_entity_only_transfer'];
+            $array['justification_transfer'] = $data['justification_transfer'];
+            $array['allow_transfer'] = $data['allow_transfer'];
+            $array['keep_category'] = $data['keep_category'];
+            $array['itilcategories_id'] = $data['itilcategories_id'];
         }
 
         return $array;

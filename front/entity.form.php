@@ -44,9 +44,26 @@ if (isset($_POST["update"])) {
         if ($_POST['allow_transfer'] == 0) {
             $config->delete(['id' => $_POST['id']]);
         } else {
-            $config->update($_POST);
-        }
 
+            $params['entity_choice'] = $_POST['entities_id'];
+            $checkMandatoryCategory = PluginTransferticketentityTicket::checkMandatoryCategory($params);
+
+            if ($checkMandatoryCategory
+                && $_POST['keep_category'] == 0
+                && $_POST['itilcategories_id'] == 0) {
+
+                Session::addMessageAfterRedirect(
+                    __(
+                        "The category is mandatory in the ticket template assigned to the entity",
+                        'transferticketentity'
+                    ),
+                    true,
+                    ERROR
+                );
+            } else {
+                $config->update($_POST);
+            }
+        }
     }
     Html::back();
 }

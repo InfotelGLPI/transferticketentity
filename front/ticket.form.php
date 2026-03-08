@@ -42,6 +42,6 @@ if (isset($_POST['transfertticket'])) {
             true,
             ERROR
         );
-        Html::back();
     }
 }
+Html::back();

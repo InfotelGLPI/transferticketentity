@@ -31,7 +31,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (strpos($_SERVER['PHP_SELF'], "showentitygroups.php")) {
+if (strpos($_SERVER['PHP_SELF'], "showentitymandatorygroup.php")) {
     include('../../../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
@@ -42,24 +42,13 @@ if (strpos($_SERVER['PHP_SELF'], "showentitygroups.php")) {
 if (isset($_POST['entity_selection'])) {
     $entitites_id = $_POST['entity_selection'];
 
-    $getGroupEntities = PluginTransferticketentityTicket::getGroupEntities($entitites_id);
+    $params['entity_choice'] = $entitites_id;
+    $getEntitiesRights = PluginTransferticketentityEntity::checkEntityRight($params);
 
-    $groups[0] = Dropdown::EMPTY_VALUE;
-    foreach ($getGroupEntities as $key => $group) {
-        $groups[$key] = $group;
-    }
-    if (count($groups) > 0) {
-        Dropdown::showFromArray(
-            'group_choice',
-            $groups,
-        );
-    } else {
-        echo "<div class='alert alert-danger'>";
-        echo __(
-            "No group found with « Assigned to » right while a group is required. Transfer impossible.",
-            "transferticketentity"
-        );
-        echo "</div>";
+    if ($getEntitiesRights['allow_entity_only_transfer'] == 1) {
+        echo "<span class='text-danger'>";
+        echo " *";
+        echo "</span>";
     }
 }
 
