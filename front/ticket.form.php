@@ -34,14 +34,14 @@ include('../../../inc/includes.php');
 $ticket = new PluginTransferticketentityTicket();
 
 if (isset($_POST['transfertticket'])) {
-    $ticket->ticketTransferETT($_POST);
-} elseif (isset($_POST['canceltransfert'])) {
-    Session::addMessageAfterRedirect(
-        __("Transfer canceled", 'transferticketentity'),
-        true,
-        ERROR
-    );
-    Html::back();
-} else {
-    Html::back();
+    if (isset($_POST['entity_choice']) && $_POST['entity_choice'] > 0) {
+        $ticket->launchTicketTransfer($_POST);
+    } else {
+        Session::addMessageAfterRedirect(
+            __("Please select a valid entity", 'transferticketentity'),
+            true,
+            ERROR
+        );
+        Html::back();
+    }
 }

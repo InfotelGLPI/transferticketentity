@@ -72,28 +72,17 @@ function plugin_transferticketentity_uninstall()
 {
     global $DB;
 
-    $result = $DB->request([
-        'SELECT' => ['profiles_id'],
-        'FROM' => 'glpi_profilerights',
-        'WHERE' => ['name' => 'plugin_transferticketentity_use', 'rights' => ALLSTANDARDRIGHT]
-    ]);
-
-    foreach ($result as $id_profil) {
-        $DB->delete('glpi_profilerights',
-            [
-                'name' => 'plugin_transferticketentity_use',
-                'profiles_id' => $id_profil
-            ]
-        );
-    }
-
+    // Plugin tables deletion
     $tables = ["glpi_plugin_transferticketentity_entities_settings"];
 
     foreach ($tables as $table) {
-        if ($DB->tableExists($table)) {
-            $DB->doQuery("DROP TABLE IF EXISTS `".$table."`");
-        }
+        $DB->dropTable($table);
     }
 
+    //Delete rights associated with the plugin
+    $profileRight = new ProfileRight();
+    foreach (PluginTransferticketentityProfile::getAllRights() as $right) {
+        $profileRight->deleteByCriteria(['name' => $right['field']]);
+    }
     return true;
 }

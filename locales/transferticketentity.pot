@@ -1,182 +1,148 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR Transferticketentity Development Team
+# This file is distributed under the same license as the GLPI - Transferticketentity plugin package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
-# 
-# 
-# Département de Maine et Loire
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GLPI Plugin - transferticketentity\n"
+"Project-Id-Version: GLPI - Transferticketentity plugin 1.1.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-24 09:03+0000\n"
-"PO-Revision-Date: 2024-04-08 11:12+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2026-03-08 14:23+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
 
-#: inc/profile.class.php:74 inc/ticket.class.php:48
-msgid "Transfer Ticket Entity"
+#: ajax/showentitygroups.php:65
+msgid ""
+"No group found with « Assigned to » right while a group is required. "
+"Transfer impossible."
 msgstr ""
 
-#: inc/profile.class.php:74
-msgid "Change rights"
-msgstr ""
-
-#: inc/profile.class.php:77
-msgid "Authorized entity transfer"
-msgstr ""
-
-#: inc/profile.class.php:89
-msgid "Save"
-msgstr ""
-
-#: inc/profile.php:50 inc/profile.php:63
-msgid "Item successfully updated"
-msgstr ""
-
-#: inc/ticket.class.php:210
-msgid "Error, please reload the page."
-msgstr ""
-
-#: inc/ticket.class.php:211
-msgid "If the problem persists, you can try to empty the cache by doing CTRL + F5."
-msgstr ""
-
-#: inc/ticket.class.php:216
-msgid "Select ticket entity to transfer"
-msgstr ""
-
-#: inc/ticket.class.php:218
-msgid "Choose your entity"
-msgstr ""
-
-#: inc/ticket.class.php:227
-msgid "Select the group to assign"
-msgstr ""
-
-#: inc/ticket.class.php:229
-msgid "Choose your group"
-msgstr ""
-
-#: inc/ticket.class.php:250
-msgid "Confirm transfer ?"
-msgstr ""
-
-#: inc/ticket.class.php:251
-msgid "Once the transfer has been completed, the ticket will remain visible only if you have the required rights."
-msgstr ""
-
-#: inc/ticket.class.php:252
-msgid "Cancel"
-msgstr ""
-
-#: inc/ticket.class.php:253 inc/ticket.class.php:244
-msgid "Confirm"
-msgstr ""
-
-#: front/ticket.form.php:125
-msgid "Please select a valid entity"
-msgstr ""
-
-#: front/ticket.form.php:135
-msgid "Please select a valid group"
-msgstr ""
-
-#: front/ticket.form.php:181
-msgid "Escalation to"
-msgstr ""
-
-#: front/ticket.form.php:181
-msgid "in the group"
-msgstr ""
-
-#: front/ticket.form.php:185
-msgid "Successful transfer for ticket n° : "
-msgstr ""
-
-#: front/ticket.form.php:197
+#: front/ticket.form.php:40
 msgid "Transfer canceled"
 msgstr ""
 
-#: inc/ticket.class.php:266
-msgid "Unauthorized transfer on closed ticket."
+#: inc/entity.class.php:117 inc/profile.class.php:68 inc/profile.class.php:126
+#: inc/ticket.class.php:560
+msgid "Transfer Ticket Entity"
 msgstr ""
 
-#: inc/ticket.class.php:436 front/ticket.form.php:357
-msgid "Please explain your transfer"
-msgstr ""
-
-#: front/ticket.form.php:266
-msgid "You must be assigned to the ticket to be able to transfer it"
-msgstr ""
-
-#: inc/ticket.class.php:239
-msgid "No entity available found, transfer impossible."
-msgstr ""
-
-#: inc/ticket.class.php:305
-msgid "None"
-msgstr ""
-
-#: inc/entity.class.php:118
+#: inc/entity.class.php:174
 msgid "Settings Transfer Ticket Entity"
 msgstr ""
 
-#: inc/entity.class.php:123
-msgid "Assigned group required"
-msgstr ""
-
-#: inc/entity.class.php:130
-msgid "Justification required"
-msgstr ""
-
-#: inc/entity.class.php:137
+#: inc/entity.class.php:179
 msgid "Allow Transfer function"
 msgstr ""
 
-#: inc/ticket.class.php:322
-msgid "No previous entity"
+#: inc/entity.class.php:192
+msgid "Assigned group required"
 msgstr ""
 
-#: inc/ticket.class.php:342
-msgid "No group found with « Assigned to » right while a group is required. Transfer impossible."
+#: inc/entity.class.php:205
+msgid "Justification required"
 msgstr ""
 
-#: inc/profile.class.php:45
-msgid "Active"
-msgstr ""
-
-#: inc/profile.class.php:47
-msgid "Transfer authorized without assignment of technician or associated group"
-msgstr ""
-
-#: inc/entity.class.php:153
+#: inc/entity.class.php:218
 msgid "Keep category after transfer"
 msgstr ""
 
-#: inc/ticket.class.php:448
-msgid "Warning, category will be reset if it does not exist in the target entity."
-msgstr ""
-
-#: inc/ticket.class.php:303
-msgid "You don't have right to update tickets. Please contact your administrator."
-msgstr ""
-
-#: inc/ticket.class.php:405
-msgid "optional"
-msgstr ""
-
-#: inc/entity.class.php:219
+#: inc/entity.class.php:231
 msgid "Default category"
 msgstr ""
 
-#: front/ticket.form.php:266
-msgid "Category will be set to null but its configured as mandatory in GLPIs template, please contact your administrator."
+#: inc/profile.class.php:150
+msgid "Authorized entity transfer"
+msgstr ""
+
+#: inc/profile.class.php:157
+msgid ""
+"Transfer authorized without assignment of technician or associated group"
+msgstr ""
+
+#: inc/ticket.class.php:129
+msgid ""
+"You don't have right to update tickets. Please contact your administrator."
+msgstr ""
+
+#: inc/ticket.class.php:139
+msgid "No entity available found, transfer impossible."
+msgstr ""
+
+#: inc/ticket.class.php:150
+msgid "Unauthorized transfer on closed ticket."
+msgstr ""
+
+#: inc/ticket.class.php:168
+msgid "Transfer the ticket"
+msgstr ""
+
+#: inc/ticket.class.php:177
+msgid "Select ticket entity to transfer"
+msgstr ""
+
+#: inc/ticket.class.php:240
+msgid "Select the group to assign"
+msgstr ""
+
+#: inc/ticket.class.php:283 inc/ticket.class.php:315
+msgid "Confirm"
+msgstr ""
+
+#: inc/ticket.class.php:294
+msgid "Confirm transfer ?"
+msgstr ""
+
+#: inc/ticket.class.php:296
+msgid ""
+"Once the transfer has been completed, the ticket will remain visible only if "
+"you have the required rights."
+msgstr ""
+
+#: inc/ticket.class.php:300 inc/ticket.class.php:643
+msgid "Please explain your transfer"
+msgstr ""
+
+#: inc/ticket.class.php:304
+msgid ""
+"Warning, category will be reset if it does not exist in the target entity."
+msgstr ""
+
+#: inc/ticket.class.php:333
+msgid "optional"
+msgstr ""
+
+#: inc/ticket.class.php:659 inc/ticket.class.php:697
+msgid "Please select a valid group"
+msgstr ""
+
+#: inc/ticket.class.php:674
+msgid "You must be assigned to the ticket to be able to transfer it"
+msgstr ""
+
+#: inc/ticket.class.php:686
+msgid "Please select a valid entity"
+msgstr ""
+
+#: inc/ticket.class.php:742
+msgid ""
+"Category will be set to null but its configured as mandatory in GLPIs "
+"template, please contact your administrator."
+msgstr ""
+
+#: inc/ticket.class.php:800
+msgid "in the group"
+msgstr ""
+
+#: inc/ticket.class.php:810
+msgid "Escalation to"
+msgstr ""
+
+#: inc/ticket.class.php:819
+msgid "Successful transfer for ticket n° : "
 msgstr ""

@@ -29,10 +29,11 @@
  --------------------------------------------------------------------------
 */
 
-define('TRANSFERTICKETENTITY_VERSION', '1.1.3');
+define('TRANSFERTICKETENTITY_VERSION', '1.1.4');
 
 if (!defined("PLUGIN_TRANSFERTICKETENTITY_DIR")) {
     define("PLUGIN_TRANSFERTICKETENTITY_WEBDIR", Plugin::getWebDir("transferticketentity", false));
+    define("PLUGIN_TRANSFERTICKETENTITY_FULLWEBDIR", Plugin::getWebDir("transferticketentity"));
 }
 function plugin_init_transferticketentity()
 {
@@ -54,30 +55,20 @@ function plugin_init_transferticketentity()
 
 function plugin_version_transferticketentity()
 {
+
     return [
         'name'           => 'TransferTicketEntity',
         'version'        => TRANSFERTICKETENTITY_VERSION,
-        'author'         => 'Yannick COMBA',
+        'author'         => 'Yannick COMBA & <a href="https://blogglpi.infotel.com">Infotel</a>',
         'license'        => 'GPLv3+',
-        'homepage'       => 'https://github.com/departement-maine-et-loire/',
+        'homepage'       => 'https://github.com/InfotelGLPI/transferticketentity',
         'requirements'   => [
-            'glpi'   => [
-                'min' => '10.0'
+            'glpi' => [
+                'min' => '10.0',
+                'max' => '11.0',
+                'dev' => false
             ]
-        ]
-    ];
-}
-
-function plugin_transferticketentity_check_prerequisites()
-{
-    $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-
-    if (version_compare($version, '10.0', '<')) {
-       echo "This plugin requires GLPI >= 10.0";
-       return false;
-    }
-
-    return true;
+        ]];
 }
 
 

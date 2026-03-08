@@ -161,8 +161,6 @@ class PluginTransferticketentityEntity extends CommonDBTM
             $checkRights->fields['itilcategories_id'] = 0;
         }
 
-        echo "<div class='firstbloc'>";
-
         if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE])) {
             echo "<form class='transferticketentity' method='post' action='" . self::getFormURL() . "'>";
         }
@@ -252,9 +250,6 @@ class PluginTransferticketentityEntity extends CommonDBTM
             echo "</div>\n";
             Html::closeForm();
         }
-
-        echo "</div>";
-
     }
 
     public static function getEntitiesRights()
