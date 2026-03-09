@@ -390,7 +390,8 @@ class Ticket extends CommonDBTM
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->getType() == \Ticket::class) {
+        if ($item->getType() == \Ticket::class
+            && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             return self::createTabEntry(__("Transfer Ticket Entity", "transferticketentity"));
         }
         return '';
@@ -407,7 +408,8 @@ class Ticket extends CommonDBTM
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == \Ticket::class) {
+        if ($item->getType() == \Ticket::class
+            && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $ticket = new self();
             $ticket->showFormMcv($item);
         }
