@@ -34,7 +34,6 @@
 use GlpiPlugin\Transferticketentity\Ticket;
 
 if (strpos($_SERVER['PHP_SELF'], "showentitygroups.php")) {
-    include('../../../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 } elseif (!defined('GLPI_ROOT')) {

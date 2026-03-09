@@ -71,7 +71,7 @@
                             {% do call('Ajax::updateItemOnSelectEvent', [
                                 'dropdown_entity_choice' ~ rand,
                                 'show_entitygroup',
-                                config('root_doc') ~ '/' ~ root_plugin ~ '/ajax/showentitygroups.php',
+                                root_plugin ~ '/ajax/showentitygroups.php',
                                 {
                                     'entity_selection': '__VALUE__',
                                     'rand': rand
@@ -81,7 +81,7 @@
                             {% do call('Ajax::updateItemOnSelectEvent', [
                                 'dropdown_entity_choice' ~ rand,
                                 'showmandatoryjustification',
-                                config('root_doc') ~ '/' ~ root_plugin ~ '/ajax/showentitymandatoryjustification.php',
+                                root_plugin ~ '/ajax/showentitymandatoryjustification.php',
                                 {
                                     'entity_selection': '__VALUE__',
                                     'rand': rand
@@ -91,7 +91,7 @@
                             {% do call('Ajax::updateItemOnSelectEvent', [
                                 'dropdown_entity_choice' ~ rand,
                                 'showmandatorygroup',
-                                config('root_doc') ~ '/' ~ root_plugin ~ '/ajax/showentitymandatorygroup.php',
+                                root_plugin ~ '/ajax/showentitymandatorygroup.php',
                                 {
                                     'entity_selection': '__VALUE__',
                                     'rand': rand

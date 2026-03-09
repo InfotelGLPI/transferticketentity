@@ -29,9 +29,6 @@
  * --------------------------------------------------------------------------
  */
 
-
-include('../../../inc/includes.php');
-
 use GlpiPlugin\Transferticketentity\Ticket;
 
 Session::checkRight("plugin_transferticketentity_use", READ);

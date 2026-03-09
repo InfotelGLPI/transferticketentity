@@ -29,11 +29,8 @@
  * --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 use GlpiPlugin\Transferticketentity\Entity;
 use GlpiPlugin\Transferticketentity\Ticket;
-
 
 Session::checkRight("entity", UPDATE);
 
