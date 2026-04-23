@@ -41,6 +41,7 @@ use Group;
 use Group_Ticket;
 use Group_User;
 use Html;
+use NotificationEvent;
 use Planning;
 use Session;
 use Ticket_User;
@@ -652,6 +653,10 @@ class Ticket extends CommonDBTM
                     "transferticketentity"
                 ) . " $theEntity " . $groupText
             ]);
+            //task created - trigger notification
+            if (class_exists('\NotificationEvent')) {
+            \NotificationEvent::raiseEvent('update', $ticket);
+            }
 
             $ticket = new \Ticket();
             $ticket->getFromDB($params['id_ticket']);
